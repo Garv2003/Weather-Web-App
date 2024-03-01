@@ -314,7 +314,8 @@ body {
 }
 
 .logo-img {
-  width: 150px;
+  width: 60px;
+  height: 60px;
   object-fit: contain;
 }
 
@@ -824,7 +825,8 @@ footer .body-3:last-child {
     display: none;
   }
   .logo-img {
-    width: 200px;
+    width: 80px;
+    height: 80px;
   }
   .header {
     position: relative;

@@ -1,4 +1,4 @@
-import logo from "../assests/images/logo.png";
+import logo from "../assests/images/logo-2.png";
 import PropType from "prop-types";
 
 const Header = ({
@@ -81,16 +81,22 @@ const Header = ({
             <span className="m-icon icon">Search</span>
           </button>
 
-          <a
-            href="#/current-location"
+          <div
             className="btn-primary has-state disabled"
             data-current-location-btn
-            // disabled
             onClick={geoLocation}
           >
             <span className="m-icon">my_location</span>
             <span className="span">Current Location</span>
-          </a>
+          </div>
+          <div
+            className="btn-primary has-state disabled"
+            data-current-location-btn
+          >
+            <span className="m-icon">Logout</span>
+            <span className="span">Login</span>
+            {/* <span className="span">Logout</span> */}
+          </div>
         </div>
       </div>
     </header>
