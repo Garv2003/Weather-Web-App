@@ -1,7 +1,13 @@
-import "./Error.css";
-import PropTypes from "prop-types";
+import "./NotFound.css";
+const API_KEY = import.meta.env.VITE_API_KEY;
 
-const Error = ({ setUrl, city, API_KEY }) => {
+const NotFound = ({
+  setUrl,
+  city,
+}: {
+  setUrl: (url: string) => void;
+  city: string;
+}) => {
   return (
     <section className="error-content" data-error-content>
       <h2 className="heading">404</h2>
@@ -22,10 +28,4 @@ const Error = ({ setUrl, city, API_KEY }) => {
   );
 };
 
-Error.propTypes = {
-  setUrl: PropTypes.func.isRequired,
-  city: PropTypes.string.isRequired,
-  API_KEY: PropTypes.string.isRequired,
-};
-
-export default Error;
+export default NotFound;

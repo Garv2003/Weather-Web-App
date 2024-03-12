@@ -330,7 +330,7 @@ body {
 }
 
 .header-actions {
-  gap: 16px;
+  gap: 5px;
 }
 
 .header .btn-primary {
@@ -488,7 +488,7 @@ article.container::before {
 }
 
 .current-weather-card .weather-icon {
-  margin-inline: auto;
+  margin-left: auto;
 }
 
 .current-weather-card .body-3 {

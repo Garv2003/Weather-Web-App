@@ -1,12 +1,32 @@
 import { useState, useRef } from "react";
 import "./Login.css";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 import { MdVisibilityOff, MdVisibility } from "react-icons/md";
 import { RotatingLines } from "react-loader-spinner";
+import { Link } from "@tanstack/react-router";
 
 function Login() {
+  const formik = useFormik({
+    initialValues: {
+      username: "",
+      password: "",
+    },
+    validationSchema: Yup.object({
+      username: Yup.string()
+        .required("Required")
+        .email("Invalid email address"),
+      password: Yup.string()
+        .required("Required")
+        .min(8, "Must be 8 characters or more")
+        .max(20, "Must be 20 characters or less"),
+    }),
+    onSubmit: (values) => {
+      console.log(values);
+    },
+  });
+
   const [showPassword, setShowPassword] = useState(false);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const passwordhidden = useRef(null);
 
@@ -19,56 +39,39 @@ function Login() {
     }
   };
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      const response = await fetch("http://localhost:5000/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username,
-          password,
-        }),
-      });
-      const data = await response.json();
-      console.log(data);
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-      setLoading(false);
-    }
-  };
-
   return (
     <div className="login">
       <div className="containerlogin">
         <div className="box1">
           <div className="headinglogin">Login</div>
-          <form className="login-form" onSubmit={handleLogin}>
+          <form className="login-form" onSubmit={formik.handleSubmit}>
             <div className="field">
               <input
                 id="username"
                 type="text"
                 className="login-input"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
                 placeholder="Phone number, username, or email"
+                value={formik.values.username}
+                onChange={formik.handleChange}
               />
+              {formik.touched.username && formik.errors.username ? (
+                <div className="error">{formik.errors.username}</div>
+              ) : null}
             </div>
             <div className="field">
               <input
                 id="password"
-                value={password}
+                value={formik.values.password}
                 className="login-input"
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={formik.handleChange}
                 type="password"
                 ref={passwordhidden}
                 placeholder="Password"
                 autoComplete="on"
               />
+              {formik.touched.password && formik.errors.password ? (
+                <div className="error">{formik.errors.password}</div>
+              ) : null}
               <div className="eye" onClick={() => changeVisibility()}>
                 {showPassword ? (
                   <MdVisibilityOff
@@ -99,16 +102,7 @@ function Login() {
                 "Log In"
               )}
             </button>
-            {/* <div className="separator">
-              <div className="line"></div>
-              <p>OR</p>
-              <div className="line"></div>
-            </div> */}
             <div className="other">
-              {/* <button className="fb-login-btn" type="button">
-                <i className="fa fa-facebook-official fb-icon"></i>
-                <span className="facebooklogin">Log in with Facebook</span>
-              </button> */}
               {/* <Link className="forgot-password" to="">
                 Forgot password?
               </Link> */}
@@ -118,9 +112,9 @@ function Login() {
         <div className="box1">
           <p>
             Don&apos;t have an account?{" "}
-            <a className="signup" to="/signup">
+            <Link className="signup" to="/signup">
               Sign Up
-            </a>
+            </Link>
           </p>
         </div>
         <div className="footer">Developed and Designed by Garv Aggarwal</div>

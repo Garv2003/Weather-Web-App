@@ -1,27 +1,31 @@
 import logo from "../assests/images/logo-2.png";
-import PropType from "prop-types";
+import { Link } from "@tanstack/react-router";
 
 const Header = ({
   search,
   handleSearch,
   active,
   setActive,
-  data,
   geoLocation,
+  data,
+}: {
+  search: string;
+  handleSearch: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  active: boolean;
+  setActive: (active: boolean) => void;
+  data: {
+    city: {
+      name: string;
+      country: string;
+    };
+  };
+  geoLocation: () => void;
 }) => {
   return (
     <header className="header">
       <div className="container">
         <a href="#" className="logo">
-          <img
-            src={logo}
-            alt="logo"
-            className="logo-img"
-            style={{
-              width: "150px",
-              height: "58px",
-            }}
-          />
+          <img src={logo} alt="logo" className="logo-img" />
         </a>
         <div
           className={`search-view ${active ? "active" : ""}`}
@@ -89,27 +93,20 @@ const Header = ({
             <span className="m-icon">my_location</span>
             <span className="span">Current Location</span>
           </div>
-          <div
-            className="btn-primary has-state disabled"
-            data-current-location-btn
-          >
-            <span className="m-icon">Logout</span>
-            <span className="span">Login</span>
-            {/* <span className="span">Logout</span> */}
-          </div>
+          <Link to="/login">
+            <div
+              className="btn-primary has-state disabled"
+              data-current-location-btn
+            >
+              <span className="m-icon">Logout</span>
+              <span className="span">Login</span>
+              {/* <span className="span">Logout</span> */}
+            </div>
+          </Link>
         </div>
       </div>
     </header>
   );
-};
-
-Header.propTypes = {
-  search: PropType.string.isRequired,
-  handleSearch: PropType.func.isRequired,
-  active: PropType.bool.isRequired,
-  setActive: PropType.func.isRequired,
-  data: PropType.object.isRequired,
-  geoLocation: PropType.func.isRequired,
 };
 
 export default Header;

@@ -1,16 +1,12 @@
 import { MdVisibilityOff, MdVisibility } from "react-icons/md";
 import { RotatingLines } from "react-loader-spinner";
 import { useRef, useState } from "react";
-import "./Login.css";
-
+import "./Login/Login.css";
+import { useFormik } from "formik";
+import { Link } from "@tanstack/react-router";
 function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
   const [showPassword2, setShowPassword2] = useState(false);
-  const [name, setname] = useState("");
-  const [username, setUsername] = useState("");
-  const [email, setemail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmpassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const passwordhidden = useRef(null);
   const confirmpasswordhidden = useRef(null);
@@ -33,45 +29,32 @@ function SignUp() {
     }
   };
 
-  const handleSignUp = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      const response = await fetch("http://localhost:5000/api/auth/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name,
-          username,
-          email,
-          password,
-          confirmpassword,
-        }),
-      });
-      const data = await response.json();
-      console.log(data);
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-      setLoading(false);
-    }
-  };
+  const formik = useFormik({
+    initialValues: {
+      name: "",
+      username: "",
+      email: "",
+      password: "",
+      confirmpassword: "",
+    },
+    onSubmit: (values) => {
+      console.log(values);
+    },
+  });
 
   return (
     <div className="login">
       <div className="containerlogin">
         <div className="box1">
           <div className="headinglogin">Sign Up</div>
-          <form className="login-form" onSubmit={handleSignUp}>
+          <form className="login-form" onSubmit={formik.handleSubmit}>
             <div className="field">
               <input
                 id="fullname"
                 type="name"
-                value={name}
                 className="login-input"
-                onChange={(e) => setname(e.target.value)}
+                value={formik.values.name}
+                onChange={formik.handleChange}
                 placeholder="Full Name"
               />
             </div>
@@ -79,9 +62,9 @@ function SignUp() {
               <input
                 id="username"
                 type="name"
-                value={username}
                 className="login-input"
-                onChange={(e) => setUsername(e.target.value)}
+                value={formik.values.username}
+                onChange={formik.handleChange}
                 placeholder="Username"
               />
             </div>
@@ -89,9 +72,9 @@ function SignUp() {
               <input
                 id="email"
                 type="name"
-                value={email}
                 className="login-input"
-                onChange={(e) => setemail(e.target.value)}
+                value={formik.values.email}
+                onChange={formik.handleChange}
                 placeholder="Email"
               />
             </div>
@@ -102,8 +85,8 @@ function SignUp() {
                 ref={passwordhidden}
                 placeholder="Password"
                 className="login-input"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={formik.values.password}
+                onChange={formik.handleChange}
                 autoComplete="off"
               />
               <div
@@ -136,8 +119,8 @@ function SignUp() {
                 placeholder="Confirm Password"
                 ref={confirmpasswordhidden}
                 className="login-input"
-                value={confirmpassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
+                value={formik.values.confirmpassword}
+                onChange={formik.handleChange}
                 autoComplete="off"
               />
               <div
@@ -176,9 +159,9 @@ function SignUp() {
         <div className="box1">
           <p>
             Have an account?{" "}
-            <a className="signup" to="/login">
+            <Link className="signup" to="/login">
               Log in
-            </a>
+            </Link>
           </p>
         </div>
       </div>

@@ -1,26 +1,17 @@
-import PropTypes from "prop-types";
 import Footer from "./Footer";
 import logo19 from "../assests/images/weathericon/direction.png";
 import MapBox from "./MapBox";
+import { Data, Data1, Icon, QualitativeName } from "../utils/utils";
 
-function QualitativeName(index) {
-  switch (index) {
-    case 1:
-      return "Good";
-    case 2:
-      return "Fair";
-    case 3:
-      return "Moderate";
-    case 4:
-      return "Poor";
-    case 5:
-      return "Very Poor";
-    default:
-      return "Good";
-  }
-}
-
-const ContentRight = ({ data, icon, data1 }) => {
+const ContentRight = ({
+  data,
+  icon,
+  data1,
+}: {
+  data: Data;
+  icon: Icon;
+  data1: Data1;
+}) => {
   return (
     <div className="content-right">
       <section
@@ -106,10 +97,7 @@ const ContentRight = ({ data, icon, data1 }) => {
                 <div>
                   <p className="label-1">Sunrise</p>
                   <p className="title-1">
-                    {new Date(data?.city?.sunrise * 1000).toLocaleTimeString({
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
+                    {new Date(data?.city?.sunrise * 1000).toLocaleTimeString()}
                   </p>
                 </div>
               </div>
@@ -118,10 +106,7 @@ const ContentRight = ({ data, icon, data1 }) => {
                 <div>
                   <p className="label-1">Sunset</p>
                   <p className="title-1">
-                    {new Date(data?.city?.sunset * 1000).toLocaleTimeString({
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
+                    {new Date(data?.city?.sunset * 1000).toLocaleTimeString()}
                   </p>
                 </div>
               </div>
@@ -179,7 +164,7 @@ const ContentRight = ({ data, icon, data1 }) => {
         <h2 className="title-2">Today at</h2>
         <div className="slider-container">
           <ul className="slider-list" data-temp>
-            {data?.list?.map((item) => {
+            {data?.list?.map((item: Data["list"][0]) => {
               return (
                 <li key={item.dt} className="slider-item">
                   <div className="card card-sm slider-card">
@@ -239,13 +224,6 @@ const ContentRight = ({ data, icon, data1 }) => {
       </section>
     </div>
   );
-};
-
-ContentRight.propTypes = {
-  data: PropTypes.object,
-  icon: PropTypes.object,
-  data1: PropTypes.object,
-  QualitativeName: PropTypes.func,
 };
 
 export default ContentRight;

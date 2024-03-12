@@ -1,20 +1,6 @@
-import PropTypes from "prop-types";
+import { formatDate, formatShortDate, Data, Icon } from "../utils/utils";
 
-function formatDate(data) {
-  let date = new Date(data);
-  let options = { weekday: "long", day: "numeric", month: "short" };
-  let formattedDate = date.toLocaleDateString("en-US", options);
-  return formattedDate;
-}
-
-function formatShortDate(data) {
-  let date = new Date(data);
-  let options = { day: "numeric", month: "short" };
-  let formattedDate = date.toLocaleDateString("en-US", options);
-  return formattedDate;
-}
-
-const ContentLeft = ({ data, icon }) => {
+const ContentLeft = ({ data, icon }: { data: Data; icon: Icon }) => {
   return (
     <div className="content-left">
       <section
@@ -66,7 +52,7 @@ const ContentLeft = ({ data, icon }) => {
         <div className="card card-lg forecast-card">
           <ul>
             {data?.list
-              .filter((item, index) => index % 8 === 0)
+              .filter((_, index) => index % 8 === 0)
               .map((item) => {
                 return (
                   <li key={item.dt} className="card-item">
@@ -99,13 +85,6 @@ const ContentLeft = ({ data, icon }) => {
       </section>
     </div>
   );
-};
-
-ContentLeft.propTypes = {
-  data: PropTypes.object,
-  icon: PropTypes.object,
-  formatDate: PropTypes.func,
-  formatShortDate: PropTypes.func,
 };
 
 export default ContentLeft;

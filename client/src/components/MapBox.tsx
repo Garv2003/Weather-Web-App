@@ -1,13 +1,16 @@
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import PropTypes from "prop-types";
+import { Data } from "../utils/utils";
 
-const MapBox = ({ data }) => {
+const ChangeView = ({ center, zoom }: { center: number[]; zoom: number }) => {
+  const map = useMap();
+  map.setView(center, zoom);
+  return null;
+};
+
+const MapBox = ({ data }: { data: Data }) => {
   return (
     <MapContainer
-      center={[data?.city?.coord?.lat, data?.city?.coord?.lon]}
-      zoom={13}
-      scrollWheelZoom={false}
       style={{
         height: "300px",
         width: "100%",
@@ -17,10 +20,11 @@ const MapBox = ({ data }) => {
         marginBottom: "20px",
       }}
     >
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      <ChangeView
+        center={[data?.city?.coord?.lat, data?.city?.coord?.lon]}
+        zoom={13}
       />
+      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
       <Marker position={[data?.city?.coord?.lat, data?.city?.coord?.lon]}>
         <Popup>
           A pretty CSS3 popup. <br /> Easily customizable.
@@ -28,10 +32,6 @@ const MapBox = ({ data }) => {
       </Marker>
     </MapContainer>
   );
-};
-
-MapContainer.propTypes = {
-  data: PropTypes.object,
 };
 
 export default MapBox;
