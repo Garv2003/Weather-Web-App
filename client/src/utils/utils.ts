@@ -39,14 +39,18 @@ const icon: Icon
     "50n": logo18,
 };
 
-const debounce = (func: (...args: any[]) => void, delay: number) => {
-    let debounceTimer: NodeJS.Timeout | null;
-    return function (...args: any[]) {
-        const context = this;
-        clearTimeout(debounceTimer as NodeJS.Timeout);
-        debounceTimer = setTimeout(() => func.apply(context, args), delay);
+const debounce = <F extends (...args: any[]) => void>(
+    func: F,
+    delay: number
+): ((...args: Parameters<F>) => void) => {
+    let debounceTimer: number;
+
+    return (...args: Parameters<F>) => {
+        let context = this;
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => func.apply(context, args), delay) as number;
     };
-}
+};
 
 function formatDate(dt: number) {
     const date = new Date(dt);
