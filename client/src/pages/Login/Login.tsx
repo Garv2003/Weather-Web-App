@@ -122,7 +122,7 @@ function Login() {
               disabled={loading}
             >
               {loading ? (
-                <RotatingLines strokeColor="#fff" height={15} width={15} />
+                <RotatingLines strokeColor="#fff" width="15" />
               ) : (
                 "Log In"
               )}

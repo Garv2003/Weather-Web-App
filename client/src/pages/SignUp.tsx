@@ -204,7 +204,7 @@ function SignUp() {
             ) : null}
             <button className="login-button" title="login" disabled={loading}>
               {loading ? (
-                <RotatingLines strokeColor="#fff" height={15} width={15} />
+                <RotatingLines strokeColor="#fff" width="15" />
               ) : (
                 "Sign Up"
               )}
