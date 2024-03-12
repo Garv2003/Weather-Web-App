@@ -47,6 +47,7 @@ const Profile = () => {
 
   const handleAdd = () => {
     const city = prompt("Enter city name");
+    console.log(city);
   };
 
   return (

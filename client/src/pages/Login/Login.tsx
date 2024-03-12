@@ -57,9 +57,9 @@ function Login() {
   const changeVisibility = () => {
     setShowPassword(!showPassword);
     if (showPassword) {
-      passwordhidden.current.type = "password";
+      if (passwordhidden.current) passwordhidden.current.type = "password";
     } else {
-      passwordhidden.current.type = "text";
+      if (passwordhidden.current) passwordhidden.current.type = "text";
     }
   };
 

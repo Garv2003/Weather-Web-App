@@ -16,22 +16,13 @@ function SignUp() {
   const confirmpasswordhidden = useRef<HTMLInputElement>(null);
   const navigate = useNavigate({ from: "/login" });
 
-  const changeVisibility = () => {
-    setShowPassword(!showPassword);
-    if (showPassword) {
-      passwordhidden.current.type = "password";
-    } else {
-      passwordhidden.current.type = "text";
-    }
-  };
-
-  const changeVisibility2 = () => {
-    setShowPassword2(!showPassword2);
-    if (showPassword2) {
-      confirmpasswordhidden.current.type = "password";
-    } else {
-      confirmpasswordhidden.current.type = "text";
-    }
+  const changeVisibility = (
+    setshowpassword: React.Dispatch<React.SetStateAction<boolean>>,
+    showpassword: boolean,
+    ref: React.RefObject<HTMLInputElement>
+  ): void => {
+    setshowpassword(!showpassword);
+    if (ref.current) ref.current.type = showpassword ? "password" : "text";
   };
 
   const formik = useFormik({
@@ -52,7 +43,7 @@ function SignUp() {
         .max(20, "Must be 20 characters or less"),
       confirmpassword: Yup.string()
         .required("Required")
-        .oneOf([Yup.ref("password"), null], "Passwords must match"),
+        .oneOf([Yup.ref("password"), ""], "Passwords must match"),
     }),
     onSubmit: (values) => {
       setLoading(true);
@@ -141,7 +132,11 @@ function SignUp() {
               <div
                 className="eye"
                 onClick={() => {
-                  changeVisibility();
+                  changeVisibility(
+                    setShowPassword,
+                    showPassword,
+                    passwordhidden
+                  );
                 }}
               >
                 {showPassword ? (
@@ -180,7 +175,11 @@ function SignUp() {
               <div
                 className="eye"
                 onClick={() => {
-                  changeVisibility2();
+                  changeVisibility(
+                    setShowPassword2,
+                    showPassword2,
+                    confirmpasswordhidden
+                  );
                 }}
               >
                 {showPassword2 ? (
