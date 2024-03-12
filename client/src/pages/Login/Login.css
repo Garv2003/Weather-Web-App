@@ -50,12 +50,13 @@
   font-size: 14px;
   text-overflow: ellipsis;
   background: #fafafa;
-  border-radius: 3px;
+  border-radius: 5px;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: row;
   padding: 0px 10px 0px 0px;
+  border: 1px solid #3b3a3a;
   background-color: hsla(0, 0%, 0%, 0.1);
 }
 
@@ -142,9 +143,10 @@
 }
 
 .hother {
-  width: 70%;
+  width: 100%;
   text-align: center;
   font-size: 15px;
+  margin-top: 10px;
 }
 
 .footer {
@@ -164,4 +166,15 @@
 a {
   text-decoration: none;
   cursor: pointer;
+}
+
+.error {
+  color: rgb(199, 18, 18);
+  font-size: 13px;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+  width: 100%;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }

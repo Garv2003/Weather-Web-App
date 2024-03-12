@@ -4,7 +4,6 @@ const cors = require("cors");
 const compression = require("compression");
 const helmet = require("helmet");
 const dotenv = require("dotenv");
-const { Client } = require("pg");
 
 dotenv.config();
 const app = express();
@@ -26,20 +25,16 @@ app.use(helmet());
 app.use("/api", require("./routes/auth"));
 app.use("/api", require("./routes/user"));
 
-// Database Connection
+// testing
 
-const client = new Client({
-  connectionString: process.env.POSTGRES_URL,
+app.get("/", (req, res) => {
+  res.json({
+    message: "Server is running",
+  });
 });
 
 const port = process.env.PORT || 8000;
 
-client
-  .connect()
-  .then(() => {
-    console.log("Database connected");
-    app.listen(port, () => {
-      console.log(`Server is running on port ${port}`);
-    });
-  })
-  .catch((err) => console.error("connection error", err.stack));
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});

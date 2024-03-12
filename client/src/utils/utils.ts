@@ -39,6 +39,7 @@ const icon: Icon
     "50n": logo18,
 };
 
+//@ts-ignore
 const debounce = <F extends (...args: any[]) => void>(
     func: F,
     delay: number

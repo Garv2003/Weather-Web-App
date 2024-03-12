@@ -1,16 +1,14 @@
 const jwt = require("jsonwebtoken");
-const cookieParser = require("cookie-parser");
 
 module.exports = function (req, res, next) {
-  const token = req.cookies.token;
-  if (!token) {
-    return res.status(401).json({ error: "Not authorized" });
-  }
+  const token = req.header("authorization");
+  if (!token) return res.status(401).json({ error: "Access Denied" });
+
   try {
-    const verified = jwt.verify(token, "secret");
+    const verified = jwt.verify(token.slice(7), "secret");
     req.user = verified;
     next();
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(400).json({ error: "Invalid Token" });
   }
 };

@@ -93,16 +93,23 @@ const Header = ({
             <span className="m-icon">my_location</span>
             <span className="span">Current Location</span>
           </div>
-          <Link to="/login">
-            <div
-              className="btn-primary has-state disabled"
-              data-current-location-btn
-            >
-              <span className="m-icon">Logout</span>
-              <span className="span">Login</span>
-              {/* <span className="span">Logout</span> */}
-            </div>
-          </Link>
+          {localStorage.getItem("token") ? (
+            <Link to="/profile" className="btn-primary has-state">
+              <span className="m-icon">person</span>
+              <span className="span">Profile</span>
+            </Link>
+          ) : (
+            <Link to="/login">
+              <div
+                className="btn-primary has-state disabled"
+                data-current-location-btn
+              >
+                <span className="m-icon">Logout</span>
+                <span className="span">Login</span>
+                {/* <span className="span">Logout</span> */}
+              </div>
+            </Link>
+          )}
         </div>
       </div>
     </header>

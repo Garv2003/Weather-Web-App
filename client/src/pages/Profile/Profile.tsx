@@ -9,21 +9,45 @@ import logo from "../../assests/images/logo-2.png";
 import "./Profile.css";
 import useWeather from "../../Hooks/useWeather";
 import { formatShortDate, formatDate } from "../../utils/utils";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { Data } from "../../utils/utils";
-import { atom } from "jotai";
-
-export const countAtom = atom(10);
+import useSWR from "swr";
 
 const Profile = () => {
+  const navigate = useNavigate({ from: "/login" });
+
+  if (!localStorage.getItem("token")) {
+    navigate({ to: "/login" });
+  }
+
+  const {
+    data: user,
+    isLoading: userLoading,
+    error: userError,
+  } = useSWR(import.meta.env.VITE_SERVER_URL + "/api/user", async (url) => {
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    return response.json();
+  });
+
+  if (userError) {
+    localStorage.removeItem("token");
+    navigate({ to: "/login" });
+  }
+
   const { data, isLoading, error, setUrl, geoLocation, isLoading1 } =
     useWeather();
 
-  if (isLoading || isLoading1) return <Loader />;
+  if (userLoading || isLoading || isLoading1) return <Loader />;
 
   if (error) return <Error setUrl={setUrl} city={"New Delhi"} />;
 
-  console.log(countAtom);
+  const handleAdd = () => {
+    const city = prompt("Enter city name");
+  };
 
   return (
     <>
@@ -60,6 +84,13 @@ const Profile = () => {
         </div>
       </header>
       <main>
+        <button
+          onClick={() => {
+            handleAdd();
+          }}
+        >
+          Add
+        </button>
         <article className="container">
           <div className="content-left">
             <section
@@ -74,11 +105,11 @@ const Profile = () => {
                     className="heading"
                     style={{ fontSize: "30px", fontWeight: "bold" }}
                   >
-                    Garv
+                    {user?.username}
                   </p>
                   <CgProfile size={100} style={{ marginLeft: "auto" }} />
                 </div>
-                <p className="body-3">Garv Aggarwal</p>
+                <p className="body-3">{user?.fullname}</p>
                 <ul className="meta-list">
                   <li className="meta-item">
                     <span className="m-icon">calendar_today</span>
