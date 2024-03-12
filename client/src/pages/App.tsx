@@ -5,7 +5,6 @@ import ContentLeft from "../components/ContentLeft";
 import ContentRight from "../components/ContentRight";
 import { icon } from "../utils/utils";
 import useWeather from "../Hooks/useWeather";
-import { useAtom } from "jotai";
 
 const App = () => {
   const {
