@@ -92,7 +92,7 @@ function Login() {
                 id="username"
                 type="text"
                 className="login-input"
-                placeholder="Phone number, username, or email"
+                placeholder="Enter your email"
                 autoComplete="off"
                 value={formik.values.username}
                 onChange={formik.handleChange}
@@ -109,7 +109,7 @@ function Login() {
                 onChange={formik.handleChange}
                 type="password"
                 ref={passwordhidden}
-                placeholder="Password"
+                placeholder="Enter your password"
                 autoComplete="on"
               />
               <div className="eye" onClick={() => changeVisibility()}>

@@ -1,8 +1,12 @@
 import { FaLocationDot } from "react-icons/fa6";
 import { RxCross2 } from "react-icons/rx";
 import { icon } from "../utils/utils";
+import { Link } from "@tanstack/react-router";
 import useSWR from "swr";
 import axios from "axios";
+import { TailSpin } from "react-loader-spinner";
+import { useState } from "react";
+import { toast } from "react-toastify";
 
 const Cards = ({
   city,
@@ -11,6 +15,8 @@ const Cards = ({
   city: string;
   RemoveCity: (city: string) => void;
 }) => {
+  const [loading, setLoading] = useState(false);
+
   const fetcher = async (url: string) => {
     const res = await axios.get(url);
     if (!res) {
@@ -50,20 +56,54 @@ const Cards = ({
       </div>
     );
 
+  const handleRemoveCity = async (city: string) => {
+    try {
+      setLoading(true);
+      await axios.delete(import.meta.env.VITE_SERVER_URL + "/api/deleteplace", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        data: {
+          city,
+        },
+      });
+      RemoveCity(city);
+      setLoading(false);
+      toast.success("City removed successfully", {
+        position: "bottom-right",
+        theme: "colored",
+      });
+    } catch (err: any) {
+      setLoading(false);
+      toast.error(err.response.data.error, {
+        position: "bottom-right",
+        theme: "colored",
+      });
+    }
+  };
+
   return (
     <div className="SubContainer">
       <div className="search-box">
         <p>
           <FaLocationDot size={30} />
-          <span>{data?.name}</span>
+          <span>
+            <Link to="/city/$name" params={{ name: city }}>
+              {city}
+            </Link>
+          </span>
         </p>
-        <RxCross2
-          size={30}
-          style={{ cursor: "pointer" }}
-          onClick={() => {
-            RemoveCity(city);
-          }}
-        />
+        {loading ? (
+          <TailSpin height={30} width={30} />
+        ) : (
+          <RxCross2
+            size={30}
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              handleRemoveCity(city);
+            }}
+          />
+        )}
       </div>
       <div className="weather-box fadeIn">
         <img src={icon[data?.weather[0]?.icon]} alt="weather" />

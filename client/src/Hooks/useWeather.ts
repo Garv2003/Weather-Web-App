@@ -82,6 +82,15 @@ export default function useWeather() {
     }
 
     const handleAdd = async () => {
+
+        if (localStorage.getItem("token") === null) {
+            toast.error("Please login to save your city", {
+                position: "bottom-right",
+                theme: "colored",
+            });
+            return;
+        }
+
         const city = prompt("Enter city name");
         if (city === null || city === "") {
             return;

@@ -72,26 +72,7 @@ const Profile = () => {
     const newPlaces = user?.places.filter((place: { name: string }) => {
       return place.name !== city;
     });
-    try {
-      await axios.delete(import.meta.env.VITE_SERVER_URL + "/api/deleteplace", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        data: {
-          city,
-        },
-      });
-      mutate({ ...user, places: newPlaces });
-      toast.success("City removed from favorite", {
-        position: "bottom-right",
-        theme: "colored",
-      });
-    } catch (err) {
-      toast.error("Something went wrong", {
-        position: "bottom-right",
-        theme: "colored",
-      });
-    }
+    mutate({ ...user, places: newPlaces });
   };
 
   const handleAdd = async () => {
