@@ -1,7 +1,13 @@
 import Footer from "./Footer";
 import logo19 from "../assests/images/weathericon/direction.png";
 import MapBox from "./MapBox";
-import { Data, Data1, Icon, QualitativeName } from "../utils/utils";
+import {
+  Data,
+  Data1,
+  Icon,
+  QualitativeName,
+  QualitativeBg,
+} from "../utils/utils";
 
 const ContentRight = ({
   data,
@@ -84,7 +90,13 @@ const ContentRight = ({
               </ul>
             </div>
 
-            <span className="badge aqi-1 label-1" title="aqi message">
+            <span
+              className="badge aqi-1 label-1"
+              title="aqi message"
+              style={{
+                backgroundColor: QualitativeBg(data1?.list[0]?.main?.aqi),
+              }}
+            >
               {QualitativeName(data1?.list[0]?.main?.aqi)}
             </span>
           </div>

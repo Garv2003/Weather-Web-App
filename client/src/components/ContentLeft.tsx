@@ -1,6 +1,17 @@
 import { formatDate, formatShortDate, Data, Icon } from "../utils/utils";
+import { TailSpin } from "react-loader-spinner";
 
-const ContentLeft = ({ data, icon }: { data: Data; icon: Icon }) => {
+const ContentLeft = ({
+  data,
+  icon,
+  handleAdd,
+  loading,
+}: {
+  data: Data;
+  icon: Icon;
+  handleAdd: () => void;
+  loading: boolean;
+}) => {
   return (
     <div className="content-left">
       <section
@@ -9,7 +20,27 @@ const ContentLeft = ({ data, icon }: { data: Data; icon: Icon }) => {
         data-current-weather
       >
         <div className="card card-lg current-weather-card">
-          <h2 className="title-2 card-title">Now</h2>
+          <h2
+            className="title-2 card-title"
+            style={{ display: "flex", justifyContent: "space-between" }}
+          >
+            <div>Now</div>
+            {loading ? (
+              <TailSpin height={30} width={30} />
+            ) : (
+              <button
+                style={{
+                  backgroundColor: "green",
+                  padding: "2px 8px",
+                  borderRadius: "100px",
+                  cursor: "pointer",
+                }}
+                onClick={handleAdd}
+              >
+                Add
+              </button>
+            )}
+          </h2>
           <div className="weapper">
             <p className="heading">
               {Math.round(data?.list[0]?.main?.temp - 273.15)}&deg;

@@ -7,6 +7,7 @@ import * as Yup from "yup";
 import { Link, useNavigate } from "@tanstack/react-router";
 import axios from "axios";
 import { toast } from "react-toastify";
+import logo from "../assests/images/logo-1.png";
 
 function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
@@ -56,6 +57,7 @@ function SignUp() {
         })
         .then(() => {
           toast.success("Sign up successful", {
+            position: "bottom-right",
             theme: "colored",
           });
           formik.resetForm();
@@ -63,9 +65,9 @@ function SignUp() {
           setLoading(false);
         })
         .catch((err) => {
-          console.log(err);
           setLoading(false);
           toast.error(err.response.data.error, {
+            position: "bottom-right",
             theme: "colored",
           });
         });
@@ -77,6 +79,12 @@ function SignUp() {
       <div className="containerlogin">
         <div className="box1">
           <div className="headinglogin">Sign Up</div>
+          <img
+            src={logo}
+            alt="logo"
+            className="logo"
+            style={{ width: "100px" }}
+          />
           <form className="login-form" onSubmit={formik.handleSubmit}>
             <div className="field">
               <input

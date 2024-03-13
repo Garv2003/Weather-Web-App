@@ -86,6 +86,23 @@ function QualitativeName(index: number) {
     }
 }
 
+function QualitativeBg(aqi: number) {
+    switch (aqi) {
+        case 1:
+            return "#89e589";
+        case 2:
+            return "#e5dd89";
+        case 3:
+            return "#e5c089";
+        case 4:
+            return "#e58989";
+        case 5:
+            return "#e589b7";
+        default:
+            return "#89e589";
+    }
+}
+
 type Data = {
     dt_txt: string;
     weather: { icon: string }[];
@@ -146,6 +163,6 @@ interface Icon {
     [key: string]: string;
 }
 
-export { icon, debounce, formatDate, formatShortDate, QualitativeName };
+export { icon, debounce, formatDate, formatShortDate, QualitativeName, QualitativeBg };
 
 export type { Data, Data1, Icon };

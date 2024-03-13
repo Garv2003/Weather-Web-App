@@ -7,7 +7,6 @@ module.exports.register = async (req, res) => {
   const { fullname, username, email, password } = req.body;
 
   // create user table
-
   const createUserTable = `CREATE TABLE IF NOT EXISTS
   users(
     id UUID PRIMARY KEY,
@@ -38,7 +37,6 @@ module.exports.register = async (req, res) => {
 
     res.status(201).json({ message: "Signed up successfully" });
   } catch (err) {
-    console.log(err);
     res.status(400).json({ error: "Try again" });
   }
 };
@@ -60,13 +58,16 @@ module.exports.login = async (req, res) => {
     } else {
       const valid = await bcrypt.compare(password, user.rows[0].password);
       if (valid) {
-        const token = jwt.sign({ email: user.rows[0].email }, "secret");
+        const token = jwt.sign({ email: user.rows[0].email }, "secret", {
+          expiresIn: "24h",
+        });
         res.json({ message: "Logged in", token: token });
       } else {
         res.status(402).json({ error: "Invalid password" });
       }
     }
   } catch (err) {
+    console.log(err);
     res.status(401).json({ error: err.message });
   }
 };
@@ -74,9 +75,14 @@ module.exports.login = async (req, res) => {
 module.exports.user = async (req, res) => {
   try {
     const user = await db.query(
-      "SELECT fullname, username, email FROM users WHERE email = $1",
+      "SELECT id, fullname, username, email FROM users WHERE email = $1",
       [req.user.email]
     );
+    const places = await db.query(
+      "SELECT name FROM places WHERE user_id = $1",
+      [user.rows[0].id]
+    );
+    user.rows[0].places = places.rows;
     res.json(user.rows[0]);
   } catch (err) {
     res.status(400).json({ error: err.message });

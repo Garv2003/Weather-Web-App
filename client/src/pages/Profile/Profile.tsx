@@ -1,6 +1,11 @@
 import Loader from "../../components/Loader/Loader";
-import Error from "../../components/NotFound/NotFound";
+import NotFound from "../../components/NotFound/NotFound";
 import { icon } from "../../utils/utils";
+import {
+  useEffect,
+  useState,
+  // useRef
+} from "react";
 import Footer from "../../components/Footer";
 import { CgProfile } from "react-icons/cg";
 import MapBox from "../../components/MapBox";
@@ -12,43 +17,141 @@ import { formatShortDate, formatDate } from "../../utils/utils";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Data } from "../../utils/utils";
 import useSWR from "swr";
+import axios from "axios";
+import { IoMdAdd } from "react-icons/io";
+import { toast } from "react-toastify";
+import { TailSpin } from "react-loader-spinner";
 
 const Profile = () => {
   const navigate = useNavigate({ from: "/login" });
+  const [loading, setLoading] = useState(false);
+
+  // const inputRef = useRef<HTMLInputElement>(null);
 
   if (!localStorage.getItem("token")) {
-    navigate({ to: "/login" });
-  }
-
-  const {
-    data: user,
-    isLoading: userLoading,
-    error: userError,
-  } = useSWR(import.meta.env.VITE_SERVER_URL + "/api/user", async (url) => {
-    const response = await fetch(url, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
-    return response.json();
-  });
-
-  if (userError) {
-    localStorage.removeItem("token");
     navigate({ to: "/login" });
   }
 
   const { data, isLoading, error, setUrl, geoLocation, isLoading1 } =
     useWeather();
 
+  const {
+    data: user,
+    isLoading: userLoading,
+    error: userError,
+    mutate,
+  } = useSWR(
+    import.meta.env.VITE_SERVER_URL + "/api/user",
+    async (url) => {
+      try {
+        const response = await axios(url, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+        return response.data;
+      } catch (err) {
+        throw new Error("Something went wrong");
+      }
+    },
+    { revalidateOnFocus: false, revalidateOnReconnect: false }
+  );
+
+  useEffect(() => {
+    if (userError) {
+      localStorage.removeItem("token");
+      navigate({ to: "/login" });
+    }
+  }, [userError]);
+
   if (userLoading || isLoading || isLoading1) return <Loader />;
 
-  if (error) return <Error setUrl={setUrl} city={"New Delhi"} />;
+  if (error) return <NotFound setUrl={setUrl} city={"New Delhi"} />;
 
-  const handleAdd = () => {
-    const city = prompt("Enter city name");
-    console.log(city);
+  const handleRemove = async (city: string) => {
+    const newPlaces = user?.places.filter((place: { name: string }) => {
+      return place.name !== city;
+    });
+    try {
+      await axios.delete(import.meta.env.VITE_SERVER_URL + "/api/deleteplace", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        data: {
+          city,
+        },
+      });
+      mutate({ ...user, places: newPlaces });
+      toast.success("City removed from favorite", {
+        position: "bottom-right",
+        theme: "colored",
+      });
+    } catch (err) {
+      toast.error("Something went wrong", {
+        position: "bottom-right",
+        theme: "colored",
+      });
+    }
   };
+
+  const handleAdd = async () => {
+    const city = prompt("Enter City Name");
+    if (city) {
+      setLoading(true);
+      try {
+        await axios.post(
+          import.meta.env.VITE_SERVER_URL + "/api/addplace",
+          {
+            city,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        mutate({ ...user, places: [...user.places, { name: city }] });
+        setLoading(false);
+        toast.success("City added to favorite", {
+          position: "bottom-right",
+          theme: "colored",
+        });
+      } catch (err: any) {
+        setLoading(false);
+        toast.error(err.response.data.error, {
+          position: "bottom-right",
+          theme: "colored",
+        });
+      }
+    }
+  };
+
+  // const AddProfile = () => {
+  //   if (inputRef.current?.files) {
+  //     const formData = new FormData();
+  //     formData.append("profileimg", inputRef.current.files[0]);
+  //     axios
+  //       .post(import.meta.env.VITE_SERVER_URL + "/api/profileimg", formData, {
+  //         headers: {
+  //           contentType: "multipart/form-data",
+  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //         },
+  //       })
+  //       .then((response) => {
+  //         toast.success("Profile Updated", {
+  //           position: "bottom-right",
+  //           theme: "colored",
+  //         });
+  //         mutate({ ...user, profile: response.data.profile });
+  //       })
+  //       .catch((err) => {
+  //         toast.error("Something went wrong", {
+  //           position: "bottom-right",
+  //           theme: "colored",
+  //         });
+  //       });
+  //   }
+  // };
 
   return (
     <>
@@ -85,13 +188,6 @@ const Profile = () => {
         </div>
       </header>
       <main>
-        <button
-          onClick={() => {
-            handleAdd();
-          }}
-        >
-          Add
-        </button>
         <article className="container">
           <div className="content-left">
             <section
@@ -108,7 +204,20 @@ const Profile = () => {
                   >
                     {user?.username}
                   </p>
-                  <CgProfile size={100} style={{ marginLeft: "auto" }} />
+                  {/* <input
+                    type="file"
+                    accept="image/*"
+                    onChange={AddProfile}
+                    style={{ display: "none" }}
+                    name="profileimg"
+                    id="profile"
+                    ref={inputRef}
+                  /> */}
+                  <CgProfile
+                    size={100}
+                    style={{ marginLeft: "auto", cursor: "pointer" }}
+                    // onClick={() => inputRef.current?.click()}
+                  />
                 </div>
                 <p className="body-3">{user?.fullname}</p>
                 <ul className="meta-list">
@@ -182,13 +291,64 @@ const Profile = () => {
               aria-labelledby="highlights-label"
               data-highlights
             >
-              <h2 className="title-2" id="highlights-label">
-                Favorite Places
+              <h2
+                className="title-2"
+                id="highlights-label"
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <div>Favorite Places</div>
+                <div
+                  style={{
+                    cursor: "pointer",
+                    background: "green",
+                    padding: "2px 5px",
+                    borderRadius: "50%",
+                    color: "white",
+                  }}
+                  onClick={handleAdd}
+                >
+                  {loading ? (
+                    <TailSpin
+                      color="white"
+                      height={20}
+                      width={20}
+                      wrapperStyle={{
+                        padding: "2px 0px",
+                      }}
+                    />
+                  ) : (
+                    <IoMdAdd size={30} />
+                  )}
+                </div>
               </h2>
               <div className="favorites">
-                <Cards />
-                <Cards />
-                <Cards />
+                {user?.places.length === 0 && (
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      height: "100%",
+                      fontSize: "20px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    No Favorite Places
+                  </div>
+                )}
+                {user?.places.map((place: { name: string }) => {
+                  return (
+                    <Cards
+                      city={place?.name}
+                      key={place?.name}
+                      RemoveCity={handleRemove}
+                    />
+                  );
+                })}
               </div>
             </section>
             <MapBox data={data} />

@@ -4,15 +4,15 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { MdVisibilityOff, MdVisibility } from "react-icons/md";
 import { RotatingLines } from "react-loader-spinner";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import axios from "axios";
 import { toast } from "react-toastify";
+import logo from "../../assests/images/logo-1.png";
 
 function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const passwordhidden = useRef<HTMLInputElement>(null);
-  const navigate = useNavigate({ from: "/profile" });
 
   const formik = useFormik({
     initialValues: {
@@ -43,13 +43,19 @@ function Login() {
           setLoading(false);
           localStorage.setItem("token", res.data.token);
           formik.resetForm();
-          navigate({ to: "/profile" });
-          toast.success("Logged in successfully");
+          window.location.assign("/profile");
+          toast.success("Logged in successfully", {
+            position: "bottom-right",
+            theme: "colored",
+          });
         })
         .catch((err) => {
           setLoading(false);
           console.log(err);
-          toast.error(err.response.data.error);
+          toast.error(err.response.data.error, {
+            position: "bottom-right",
+            theme: "colored",
+          });
         });
     },
   });
@@ -68,6 +74,18 @@ function Login() {
       <div className="containerlogin">
         <div className="box1">
           <div className="headinglogin">Login</div>
+          <img
+            src={logo}
+            alt="logo"
+            className="logo"
+            style={{
+              width: "100px",
+              height: "100px",
+              borderRadius: "50%",
+              margin: "auto",
+              marginBottom: "20px",
+            }}
+          />
           <form className="login-form" onSubmit={formik.handleSubmit}>
             <div className="field">
               <input
@@ -147,7 +165,6 @@ function Login() {
             </Link>
           </p>
         </div>
-        <div className="footer">Developed and Designed by Garv Aggarwal</div>
       </div>
     </div>
   );
