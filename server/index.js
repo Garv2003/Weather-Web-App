@@ -13,6 +13,7 @@ app.use(morgan("dev"));
 app.use(
   cors({
     origin: process.env.CLIENT_URL,
+    credentials: true,
   })
 );
 app.use(express.urlencoded({ extended: true }));
