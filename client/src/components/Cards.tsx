@@ -1,6 +1,7 @@
 import { FaLocationDot } from "react-icons/fa6";
 import { RxCross2 } from "react-icons/rx";
 import { icon } from "../utils/utils";
+import { useEffect } from "react";
 import { Link } from "@tanstack/react-router";
 import useSWR from "swr";
 import axios from "axios";
@@ -30,32 +31,6 @@ const Cards = ({
     fetcher
   );
 
-  if (isLoading)
-    return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        Loading...
-      </div>
-    );
-
-  if (error)
-    return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        Something went wrong
-      </div>
-    );
-
   const handleRemoveCity = async (city: string) => {
     try {
       setLoading(true);
@@ -81,6 +56,42 @@ const Cards = ({
       });
     }
   };
+
+  useEffect(() => {
+    if (error) {
+      handleRemoveCity(city);
+      toast.error("Place not found", {
+        position: "bottom-right",
+        theme: "colored",
+      });
+    }
+  }, [error]);
+
+  if (isLoading)
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        Loading...
+      </div>
+    );
+
+  if (error)
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        Something went wrong
+      </div>
+    );
 
   return (
     <div className="SubContainer">
